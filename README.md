@@ -1,2 +1,2 @@
-# google-sheets-backend
-Using Google Sheets as a backend
+# Google  Sheets Backend
+Some playing using node, express and google sheets SDK as a backend

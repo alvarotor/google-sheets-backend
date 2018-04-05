@@ -1,0 +1,75 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <h1>{{title}}</h1>
+  <a href="/property/{{property}}">Menu</a>
+  <table class="table table-striped">
+    <tr><td nowrap colspan=2>
+    Firmware version
+    </td><td style="width:100%">
+    <input type="text" value="{{row[0]}}" style="width:100%" id="firmware_version" />
+    </td></tr>
+    <tr><td nowrap colspan=2>
+    Firmware update date
+    </td><td style="width:100%">
+    <input type="text" value="{{row[1]}}" style="width:100%" id="firmware_update_date" />
+    </td></tr>
+    <tr><td nowrap colspan=2>
+    Battery last change
+    </td><td style="width:100%">
+    <input type="text" value="{{row[2]}}" style="width:100%" id="battery_last_change" />
+    </td></tr>
+    <tr>
+    <td nowrap rowspan=2>K3 App Login Details</td>
+    <td nowrap>
+    KS App Login
+    </td><td style="width:100%">
+    <input type="text" value="{{row[4]}}" style="width:100%" id="ks_app_login" />
+    </td></tr>
+    <tr><td nowrap>
+    KS App password
+    </td><td style="width:100%">
+    <input type="text" value="{{row[5]}}" style="width:100%" id="ks_app_password" />
+    </td></tr>
+    <tr><td nowrap colspan=2>
+    Problem Lock?
+    </td><td style="width:100%">
+    <textarea type="text" style="width:100%" id="problem_lock">{{row[3]}}</textarea>
+    </td></tr>
+    <tr><td nowrap colspan=3>
+    <button class="btn btn-primary float-right" id="save">Save</button>
+    </td></tr>
+  </table>
+  <script>
+    document.getElementById("save").addEventListener("click", function() {
+      var firmware_version = document.getElementById("firmware_version").value;
+      var firmware_update_date = document.getElementById("firmware_update_date").value;
+      var battery_last_change = document.getElementById("battery_last_change").value;
+      var ks_app_login = document.getElementById("ks_app_login").value;
+      var ks_app_password = document.getElementById("ks_app_password").value;
+      var problem_lock = document.getElementById("problem_lock").value;
+
+      axios.post('/lock-status/{{property}}/save', {
+        firmware_version,
+        firmware_update_date,
+        battery_last_change,
+        ks_app_login,
+        ks_app_password,
+        problem_lock
+      })
+      .then(function (response) {
+        console.log(response.data);
+        if (response.data.success)
+          alert("Updated");
+        else
+          alert("Error on server.");
+      })
+      .catch(function (err) {
+        console.error(err);
+        console.log(err.response);
+        alert("Error on server.");
+      });
+
+    });
+  </script>
+{% endblock %}

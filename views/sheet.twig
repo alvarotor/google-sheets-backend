@@ -1,0 +1,84 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+<h1>OVERVIEW {{property}}</h1>
+<a href="/property/{{property}}" class="btn btn-primary">Menu</a>
+<a href="/" class="btn btn-primary">Index</a>
+<table class="table table-striped">
+{% for row in rows %}
+  {% set pos = loop.index %}
+  <tr>
+    {% for cell in row %}
+      {% if (loop.index >= 3 and loop.index <= 7) and pos > 2 %}
+        <td>
+          <select id="pos{{pos}}row{{loop.index}}">
+            <option value="">Select an option</option>
+            <option value="ACTIVE" {% if cell == 'ACTIVE' %}selected{% endif %}>ACTIVE</option>
+            <option value="UNINSTALLED" {% if cell == 'UNINSTALLED' %}selected{% endif %}>UNINSTALLED</option>
+            <option value="OFFLINE" {% if cell == 'OFFLINE' %}selected{% endif %}>OFFLINE</option>
+            <option value="NA" {% if cell == 'NA' %}selected{% endif %}>NA</option>
+          </select>
+        </td>
+      {% else %}
+        <td>{{cell}}</td>
+      {% endif %}
+    {% endfor %}
+  </tr>
+{% endfor %}
+</table>
+<script>
+  var loading = true;
+  window.onload = function() {
+    console.log("Loaded.");
+    loading = false;
+  };
+
+  function addEventHandler(elem, eventType, handler) {
+    if (elem.addEventListener)
+        elem.addEventListener(eventType, handler, false);
+    else if (elem.attachEvent)
+        elem.attachEvent('on' + eventType, handler); 
+  }
+  
+  var sentQuery = false;
+  var selects = document.querySelectorAll('select');
+  addEventHandler(document, 'DOMContentLoaded', function() {
+    for (var i = 0; i < selects.length; i++) {
+      addEventHandler(selects[i], 'change', function() {
+
+        if (loading || sentQuery) {
+          alert("Page still loading, please wait some seconds.");
+        }
+        else {
+          {# sentQuery = true; #}
+
+          var row = parseInt(this.id.substring(3, 4));
+          var col = parseInt(this.id.substring(7, 8));
+
+          axios.post('/sheet/{{property}}', {
+            col, row,
+            value: this.value
+          })
+          .then(function (response) {
+            console.log(response.data);
+            if (response.data.success)
+              alert("Updated");
+            else
+              alert("Error on server.");
+            sentQuery = false;
+          })
+          .catch(function (err) {
+            console.error(err);
+            console.log(err.response);
+            alert("Error on server.");
+            sentQuery = false;
+          });
+          
+        }
+
+      });
+    }
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <h1>{{title}}</h1>
+  <a href="/property/{{property}}">Menu</a>
+  <table class="table table-striped">
+    <tr>
+      <td nowrap>
+      Address
+      </td>
+      <td style="width:100%" colspan=2>
+        <input type="text" value="{{rows[0]}}" style="width:100%" id="address" />
+      </td>
+    </tr>
+    <tr>
+      <td nowrap rowspan=4>Name & Contact number of Operatives</td>
+      <td nowrap>
+      Name
+      </td>
+      <td style="width:100%">
+      <input type="text" value="{{rows[1]}}" style="width:100%" id="name1" />
+      </td>
+    </tr>
+    <tr>
+      <td nowrap>	
+      Tel
+      </td>
+      <td style="width:100%">
+      <input type="text" value="{{rows[2]}}" style="width:100%" id="tel1" />
+      </td>
+    </tr>
+    <tr>
+      <td nowrap>
+      Name
+      </td>
+      <td style="width:100%">
+      <input type="text" value="{{rows[3]}}" style="width:100%" id="name2" />
+      </td>
+    </tr>
+    <tr>
+      <td nowrap>	
+      Tel
+      </td>
+      <td style="width:100%">
+      <input type="text" value="{{rows[4]}}" style="width:100%" id="tel2" />
+      </td>
+    </tr>
+    <tr>
+      <td nowrap>
+      Date of last PAT testing
+      </td>
+      <td style="width:100%" colspan=2>
+      <input type="text" value="{{rows[5]}}" style="width:100%" id="date_of_last_pat_testing" />
+      </td>
+    </tr>
+    <tr>
+      <td nowrap>	
+      Locker type
+      </td>
+      <td style="width:100%" colspan=2>
+      <input type="text" value="{{rows[6]}}" style="width:100%" id="locker_type" />
+      </td>
+    </tr>
+    <tr>
+      <td nowrap>	
+      Log a maintenance issue
+      </td>
+      <td style="width:100%" colspan=2>
+      <textarea type="text" style="width:100%" id="log_a_maintenance_issue">{{rows[7]}}</textarea>
+      </td>
+    </tr>
+    <tr><td nowrap colspan=3>	
+      <button class="btn btn-primary float-right" id="save">Save</button>
+    </td></tr>
+  </table>
+  <script>
+    document.getElementById("save").addEventListener("click", function() {
+      var address = document.getElementById("address").value;
+      var name1 = document.getElementById("name1").value;
+      var tel1 = document.getElementById("tel1").value;
+      var name2 = document.getElementById("name2").value;
+      var tel2 = document.getElementById("tel2").value;
+      var date_of_last_pat_testing = document.getElementById("date_of_last_pat_testing").value;
+      var locker_type = document.getElementById("locker_type").value;
+      var log_a_maintenance_issue = document.getElementById("log_a_maintenance_issue").value;
+
+      axios.post('/site-info/{{property}}/save', {
+        address,
+        name1,
+        tel1,
+        name2,
+        tel2,
+        date_of_last_pat_testing,
+        locker_type,
+        log_a_maintenance_issue
+      })
+      .then(function (response) {
+        console.log(response.data);
+        if (response.data.success)
+          alert("Updated");
+        else
+          alert("Error on server.");
+      })
+      .catch(function (err) {
+        console.error(err);
+        console.log(err.response);
+        alert("Error on server.");
+      });
+
+    });
+  </script>
+{% endblock %}

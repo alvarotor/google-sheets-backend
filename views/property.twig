@@ -1,0 +1,11 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+<h1>{{property}}</h1>
+<a href="/" class="btn btn-primary">Index</a>
+<table class="table table-striped hide">
+  <tr><td><a href="/sheet/{{property}}">Overview</a></td></tr>
+  <tr><td><a href="/site-info/{{property}}">Site Information</a></td></tr>
+  <tr><td><a href="/lock-status/{{property}}">Lock status</a></td></tr>
+</table>
+{% endblock %}
